@@ -4,7 +4,9 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    '**/*.js',
+-    '**/*.js',
++    '<rootDir>/src/**/*.js',
++    '!<rootDir>/src/**/__tests__/**',
     '!**/node_modules/**',
     '!**/test/**',
     '!**/coverage/**',

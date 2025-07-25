@@ -41,6 +41,9 @@ describe('ziptoxpi', () => {
           expect(modifiedManifest.applications).toBeDefined();
           expect(modifiedManifest.applications.gecko).toBeDefined();
           expect(modifiedManifest.applications.gecko.id).toBe(`${testAppId}@foxify`);
+          expect(modifiedManifest.name).toBe(manifest.name);
+          expect(modifiedManifest.version).toBe(manifest.version);
+          expect(modifiedManifest.manifest_version).toBe(manifest.manifest_version);
           
           done();
         })
@@ -53,6 +56,10 @@ describe('ziptoxpi', () => {
   it('should handle large files within size limit', (done) => {
     const zip = new JSZip();
     const largeContent = 'x'.repeat(1024 * 1024); // 1MB of data
+
+    // Add a basic manifest (ZipToXpi might expect it)
+    const manifest = { name: 'Test', version: '1.0', manifest_version: 2 };
+    zip.file('manifest.json', JSON.stringify(manifest));
     
     // Add a large file to the zip
     zip.file('large-file.txt', largeContent);
@@ -75,6 +82,11 @@ describe('ziptoxpi', () => {
           // The output should be a valid zip file
           const xpiZip = await JSZip.loadAsync(xpiData);
           expect(xpiZip.files['large-file.txt']).toBeDefined();
+          
+          // Verify content integrity
+          const outputContent = await xpiZip.file('large-file.txt').async('string');
+          expect(outputContent).toBe(largeContent);
+          
           done();
         })
         .on('error', (err) => {

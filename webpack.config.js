@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const isProduction = process.env.NODE_ENV === 'production';
+//const isProduction = process.env.NODE_ENV === 'production';
 
 const commonConfig = {
   entry: './resources/js/app.js',
@@ -57,7 +57,8 @@ const commonConfig = {
     }),
   ],
   optimization: {
-    minimize: isProduction,
+    // was: minimize: isProduction,
+    minimize: true, // Will be controlled by mode in merge
     minimizer: [
       '...', // Extend default minimizers (like Terser for JS)
       new CssMinimizerPlugin({

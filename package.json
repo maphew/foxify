@@ -6,17 +6,16 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "concurrently \"nodemon --inspect ./bin/www\" \"webpack serve --mode development --open\"",
-    "watch": "webpack --watch",
-    "build": "webpack --mode production",
-    "lint": "eslint .",
-    "test": "jest --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:unit": "jest test/unit",
-    "test:api": "jest test/api",
-    "test:e2e": "jest test/e2e"
+   "devDependencies": {
+     "concurrently": "^8.2.2",
+     "nodemon": "^3.0.3",
+     "eslint": "^8.57.0",
+     "jest": "^29.7.0",
+     "webpack": "^5.89.0",
+     "webpack-cli": "^5.1.4",
+     "webpack-dev-server": "^4.15.2",
+     ...
+   }
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
