@@ -2,9 +2,8 @@ const path = require('path');
 const { merge } = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-//const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === 'production';
 
 const commonConfig = {
   entry: './resources/js/app.js',
@@ -49,12 +48,7 @@ const commonConfig = {
     new MiniCssExtractPlugin({
       filename: '../css/[name].css',
       chunkFilename: '../css/[id].css',
-    }),
-    new HtmlWebpackPlugin({
-      template: './views/index.ejs',
-      filename: '../../views/index.ejs',
-      inject: 'body',
-    }),
+    })
   ],
   optimization: {
     // was: minimize: isProduction,
@@ -81,12 +75,18 @@ const developmentConfig = {
   devServer: {
     static: {
       directory: path.join(__dirname, 'public'),
+      publicPath: '/assets/'
     },
     compress: true,
-    port: 3001,
+    port: 3002,
     hot: true,
     proxy: {
-      '/': 'http://localhost:3000',
+      context: () => true, // Proxy all requests
+      target: 'http://localhost:3000',
+      ws: true
+    },
+    devMiddleware: {
+      writeToDisk: true, // Write files to disk so Express can serve them
     },
   },
 };
