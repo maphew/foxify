@@ -36,13 +36,19 @@ let onConversionFormSubmit = (e) => {
     let format = converterForm.elements['format'].value;
     let forceDownload = (converterForm.elements['force_dl'].value == 1);
 
+    console.log('Form submitted with URL:', url);
+    console.log('Format:', format, 'Force download:', forceDownload);
+
     // Try to create CRXExtension instance
     try{
+        console.log('Attempting to create CRXExtension instance...');
         let extension = new CRXExtension(url);
+        console.log('CRXExtension created successfully:', extension);
         extension.triggerDownload(format, forceDownload);
         animations.showLoader();
     }
-    catch{
+    catch(error){
+        console.error('Error creating CRXExtension:', error);
         animations.shakeInput();
     }
 }

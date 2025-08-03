@@ -96,10 +96,32 @@ const developmentConfig = {
     compress: true,
     port: 3002,
     hot: true,
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false
+      }
+    },
     proxy: {
-      context: () => true, // Proxy all requests
+      // Only proxy API routes, not webpack dev server routes
+      '/api/**': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      },
+      // Proxy all other routes except webpack dev server routes
+      context: (pathname) => {
+        // Don't proxy webpack dev server routes
+        if (pathname.startsWith('/ws') || 
+            pathname.startsWith('/__webpack_dev_server__') ||
+            pathname.startsWith('/webpack-dev-server') ||
+            pathname.startsWith('/assets/')) {
+          return false;
+        }
+        // Proxy everything else to backend
+        return true;
+      },
       target: 'http://localhost:3000',
-      ws: true
+      changeOrigin: true
     },
     devMiddleware: {
       writeToDisk: true, // Write files to disk so Express can serve them

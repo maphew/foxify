@@ -14,7 +14,7 @@ const router = express.Router();
 const getExtensionParam = (url, index) => {
     var index = index || 0;
     var url = url || "";
-    var rules = "^https:\/\/chrome\.google\.com\/webstore\/detail\/([a-zA-Z0-9\-]*)\/([a-z]*)";
+    var rules = "^https:\/\/(chrome\.google\.com\/webstore|chromewebstore\.google\.com)\/detail\/([a-zA-Z0-9\-]*)\/([a-zA-Z0-9]*)(?:\\?.*)?$";
     
     var matches = url.match(rules);
 
@@ -26,7 +26,7 @@ const getExtensionParam = (url, index) => {
  * @param {String} url 
  */
 const getExtensionName = (url) => {
-    return getExtensionParam(url, 1);
+    return getExtensionParam(url, 2);
 }
 
 /**
@@ -34,7 +34,7 @@ const getExtensionName = (url) => {
  * @param {String} url 
  */
 const getExtensionId = (url) => {
-    return getExtensionParam(url, 2);
+    return getExtensionParam(url, 3);
 }
 
 /**
@@ -56,29 +56,53 @@ const getDownloadUrl = (id) => {
 
 
 router.get('/:name([a-z]*).:format(crx|zip|xpi)', (req, res, next) => {
+    console.log('Download request received:', {
+        name: req.params.name,
+        format: req.params.format,
+        url: req.query.url,
+        force_dl: req.query.force_dl
+    });
+    
     const extension_id = getExtensionId(req.query.url);
     const format = getFormat(req.params.format);
     const force_dl = isTrue(req.query.force_dl);
 
+    console.log('Parsed values:', {
+        extension_id,
+        format,
+        force_dl
+    });
+
     // If something isn't valid, return Bad request error.
     if(!extension_id || !format){
+        console.error('Invalid extension_id or format:', { extension_id, format });
         res.sendStatus(400);
         return;
     }
 
     let download_url = getDownloadUrl(extension_id);
+    console.log('Download URL constructed:', download_url);
 
     // Request download extension from Google Web Store servers
     let crx = request.get({
-        url: download_url,
+        uri: download_url,
         followAllRedirects: true,
         encoding: null,
         headers: {
-            'uri': download_url,
             'Accept': '*/*',
             'User-Agent': req.get('User-Agent'),
         }
     })
+    .on('error', (error) => {
+        console.error('Error downloading CRX:', error);
+        res.status(500).send('Error downloading extension');
+    })
+    .on('response', (response) => {
+        console.log('CRX download response:', {
+            statusCode: response.statusCode,
+            headers: response.headers
+        });
+    });
 
     // Instance of converters classes
     let tozip = new crxtozip();

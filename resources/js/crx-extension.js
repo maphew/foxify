@@ -5,15 +5,19 @@ export default class CRXExtension{
      * @param {*} url
      */
     constructor(url){
-        let rules = "^https:\/\/chrome\.google\.com\/webstore\/detail\/([a-zA-Z0-9\-]*)\/([a-z]*)";
+        let rules = "^https:\/\/(chrome\.google\.com\/webstore|chromewebstore\.google\.com)\/detail\/([a-zA-Z0-9\-]*)\/([a-zA-Z0-9]*)(?:\\?.*)?$";
+        console.log('CRXExtension constructor - URL:', url);
+        console.log('CRXExtension constructor - Regex:', rules);
         let matches = url.match(rules);
+        console.log('CRXExtension constructor - Matches:', matches);
     
-        if(typeof matches[1] === "undefined" || typeof matches[2] === "undefined")
+        if(matches === null || typeof matches[2] === "undefined" || typeof matches[3] === "undefined")
             throw "Following URL is probably incorrect : "+url;
 
         this.url = url;
-        this.name = matches[1];
-        this.extensionId = matches[2];
+        this.name = matches[2];
+        this.extensionId = matches[3];
+        console.log('CRXExtension constructor - Created:', { name: this.name, extensionId: this.extensionId });
     }
 
     /**
