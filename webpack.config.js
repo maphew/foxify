@@ -17,11 +17,27 @@ const commonConfig = {
   module: {
     rules: [
       {
-        test: /\.(css|scss)$/i,
+        test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                includePaths: [path.resolve(__dirname, 'resources/scss')],
+              },
+              // Prepend variables import to all SCSS files
+              additionalData: `@use 'variables' as *;`,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
         ],
       },
       {

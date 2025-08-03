@@ -1,7 +1,9 @@
-@import "variables";
+// Import variables first
+@use 'variables' as *;
 
-@import "global";
-@import "converter";
-@import "faq";
-@import "box";
-@import "mobile";
+// Then import other SCSS files that depend on these variables
+@use 'global';
+@use 'converter';
+@use 'faq';
+@use 'box';
+@use 'mobile';
