@@ -6,9 +6,9 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "dev": "concurrently \"nodemon app.js\" \"webpack serve --mode development --open\"",
+    "dev": "concurrently \"nodemon bin/www\" \"webpack serve --mode development --open\"",
     "build": "webpack --mode production",
-    "start": "node app.js"
+    "start": "node bin/www"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

@@ -1,7 +1,7 @@
-// Import variables first
-@use 'variables' as *;
+// Forward variables first
+@forward 'variables';
 
-// Then import other SCSS files that depend on these variables
+// Import all other SCSS files with access to variables
 @use 'global';
 @use 'converter';
 @use 'faq';
